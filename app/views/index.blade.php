@@ -102,9 +102,10 @@
                                         <p>Na pitanja se odgovara na skali od 1 do 10. Ocena 1 (skroz levo) znači da se najmanje slažete sa postavljenom tvrdnjom, a 10 (skroz desno) da se najviše slažete sa njom.</p>
                                         <div class="row margin">
                                             <div class="col-sm-6">
-                                                @foreach($json as $q)
-                                                    <p>{{$q->question}}</p>
+                                                @foreach($json as $key => $q)
+                                                    <p><strong>{{$key+1}}.</strong> {{$q->question}}</p>
                                                     <input type="text" value="5" name="{{$q->id}}" class="slider form-control" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="5" data-slider-orientation="horizontal" data-slider-selection="before" data-slider-tooltip="show" data-slider-id="red">
+                                                    <span style="float:left"><strong>0</strong> <small>(ne slažem se)</small></span><span style="float:right"><strong>10</strong> <small>(slažem se)</small></span>
                                                     <hr/>
                                                 @endforeach
                                             </div>
