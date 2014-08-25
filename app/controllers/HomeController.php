@@ -374,9 +374,18 @@ class HomeController extends BaseController {
                                         break;
                         }
                 }
-                foreach ($fields as $key => $value) {
-                        echo "<p>".$labels[$key].": ".round($value, 2)."</p><br/>";
-                }
+                $title = "Rezultati vašeg testiranja";
+
+                View::share('labels', $labels);
+                View::share('fields', $fields);
+                View::share('title', $title);
+                $this->layout           = View::make('finish');
+                $this->layout->head     = View::make('head');
+                
+                
+        }
+
+        public function getPickCollege(){
                 
         }
 

@@ -32,12 +32,12 @@
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                         <div class="pull-left image">
+
                         </div>
                         <div class="pull-left info">
                         </div>
                     </div>
                     <ul class="sidebar-menu">
-                        
                     </ul>
                 </section>
                 <!-- /.sidebar -->
@@ -48,7 +48,7 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        <small></small>
+                        <small>{{$title}}</small>
                     </h1>
                 </section>
 
@@ -58,23 +58,18 @@
                         <div class="col-xs-12">
                             <div class="box box-primary">
                                 <div class="box-header">
-                                    <h3 class="box-title">Pošalji sve!</h3>
+                                    <h3 class="box-title">{{$title}}</h3>
                                 </div><!-- /.box-header -->
-                                <form action="http://localhost:8080/Professional_Orientation/api/request/calculate" method="post">
                                     <div class="box-body">
-                                        <p></p>
                                         <div class="row margin">
-                                            <div class="col-sm-12">
-                                                @foreach(Session::all() as $key => $field)
-                                                    @if(!is_array($field))
-                                                      <input type="hidden" value="{{$field}}" name="{{$key}}"/>
-                                                    @endif
+                                            <div class="col-sm-6">
+                                                @foreach ($fields as $key => $value)
+                                                    <h3>{{$labels[$key]}}: {{round($value, 2)}}</h3><br/>
                                                 @endforeach
+                                                <a class="btn btn-primary btn-lg col-lg-12" href="{{URL::action('HomeController@getPickCollege')}}">Odaberi fakultet</a>
                                             </div>
-                                            <input type="submit" name="submit" value="Pošalji" class="btn btn-primary btn-lg col-lg-12">
                                         </div>
                                     </div><!-- /.box-body -->
-                                </form>
                             </div><!-- /.box -->
                         </div><!-- /.col -->
                     </div><!-- /.row -->
