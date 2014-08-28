@@ -26,22 +26,25 @@ class HomeController extends BaseController {
 	public function getIndex(){
 
                 $ch = curl_init(); 
-                curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/Professional_Orientation/api/municipalities"); 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/municipalities"); 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
                 $output = curl_exec($ch); 
                 curl_close($ch);      
                 View::share('municipalities', json_decode($output));
 
                 $ch = curl_init(); 
-                curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/Professional_Orientation/api/schools"); 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/schools"); 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
                 $output = curl_exec($ch); 
                 curl_close($ch);      
                 View::share('schools', json_decode($output));
 
                 View::share('action', 'HomeController@postBasicInfo');
-		$this->layout           = View::make('basic');
+                View::share('heading', 'Osnovne informacije o korisniku');
+		$this->layout           = View::make('master');
                 $this->layout->head     = View::make('head');
+                $this->layout->left     = View::make('left');
+                $this->layout->basic    = View::make('basic');
 	}
 
         public function postBasicInfo(){
@@ -56,7 +59,7 @@ class HomeController extends BaseController {
 		$ch = curl_init(); 
 
                 // set url 
-                curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/Professional_Orientation/api/personality"); 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/personality"); 
 
                 //return the transfer as a string 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
@@ -70,8 +73,11 @@ class HomeController extends BaseController {
                 View::share('json', json_decode($output));
                 View::share('question_type', 'u vezi sa osobinama ličnosti');
                 View::share('action', 'HomeController@postCalculatePersonality');
-		$this->layout 		= View::make('index');
+                View::share('heading', 'Pitanja vezana za osobine ličnosti');
+		$this->layout 		= View::make('master');
 		$this->layout->head 	= View::make('head');
+                $this->layout->left     = View::make('left');
+                $this->layout->main     = View::make('questions');
 	}
 
 	public function postCalculatePersonality(){
@@ -92,7 +98,7 @@ class HomeController extends BaseController {
 		$ch = curl_init(); 
 
                 // set url 
-                curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/Professional_Orientation/api/personality"); 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/personality"); 
 
                 //return the transfer as a string 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
@@ -160,7 +166,7 @@ class HomeController extends BaseController {
                         $ch = curl_init(); 
 
                         // set url 
-                        curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/Professional_Orientation/api/areas"); 
+                        curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/areas"); 
 
                         //return the transfer as a string 
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
@@ -174,9 +180,12 @@ class HomeController extends BaseController {
                         View::share('json', json_decode($output));
                         View::share('question_type', 'u vezi sa oblastima interesovanja');
                         View::share('action', 'HomeController@postCalculateAreas');
+                        View::share('heading', 'Pitanja vezana za oblasti interesovanja');
 
-                        $this->layout           = View::make('index');
+                        $this->layout           = View::make('master');
                         $this->layout->head     = View::make('head');
+                        $this->layout->left     = View::make('left');
+                        $this->layout->main     = View::make('questions');
                 }
 	}
 
@@ -212,7 +221,7 @@ class HomeController extends BaseController {
                 $ch = curl_init(); 
 
                 // set url 
-                curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/Professional_Orientation/api/areas"); 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/areas"); 
 
                 //return the transfer as a string 
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
@@ -316,8 +325,11 @@ class HomeController extends BaseController {
                 if(!isset($_SERVER['HTTP_REFERER'])){
                         return Redirect::to(URL::action('HomeController@getAreaQuestions'));
                 }
-                $this->layout           = View::make('calculate');
+                View::share('heading', 'Nastavite na rezultate');
+                $this->layout           = View::make('master');
                 $this->layout->head     = View::make('head');
+                $this->layout->left     = View::make('left');
+                $this->layout->main     = View::make('calculate');
         }
 
         public function getFinish(){
@@ -379,14 +391,32 @@ class HomeController extends BaseController {
                 View::share('labels', $labels);
                 View::share('fields', $fields);
                 View::share('title', $title);
-                $this->layout           = View::make('finish');
+                View::share('heading', 'Rezultati testiranja');
+                $this->layout           = View::make('master');
                 $this->layout->head     = View::make('head');
+                $this->layout->left     = View::make('left');
+                $this->layout->main     = View::make('finish');
                 
                 
         }
 
         public function getPickCollege(){
-                
+                $ch = curl_init(); 
+
+                // set url 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/colleges?id=".Session::get('id')); 
+
+                //return the transfer as a string 
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+                // $output contains the output string 
+                $output = curl_exec($ch); 
+                       
+                $json = json_decode($output);
+
+                // close curl resource to free up system resources 
+                curl_close($ch);  
+                var_dump($json);
         }
 
 }
