@@ -416,7 +416,13 @@ class HomeController extends BaseController {
 
                 // close curl resource to free up system resources 
                 curl_close($ch);  
-                var_dump($json);
+                View::share('colleges', $json);
+                View::share('heading', 'Ocenite preporuke');
+                View::share('title', 'Ocenite preporuke');
+                $this->layout           = View::make('master');
+                $this->layout->head     = View::make('head');
+                $this->layout->left     = View::make('left');
+                $this->layout->main     = View::make('pickCollege');
         }
 
 }
