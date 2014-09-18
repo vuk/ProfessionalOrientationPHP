@@ -9,7 +9,8 @@
 
             </div>
             <div class="pull-left info">
-                Dobrodošli na sistem za profesionalnu orijentaciju. <br/>Sistem je namenjen učenicima srednjih škola kao pomoć pri izboru fakulteta. <br/><br/>
+                Dobrodošli na sistem za profesionalnu orijentaciju. <br/>Sistem je prvenstveno namenjen učenicima srednjih škola kao pomoć pri izboru fakulteta. <br/><br/>
+                Naravno mogu ga koristiti svi oni koji su radoznali i žele da vide "da li su pogrešili prilikom izbora fakulteta".<br><br>
                 Trudite se da na pitanja odgovarate realno, jer će samo realni odgovori dati realan rezultat
             </div> 
         </div>

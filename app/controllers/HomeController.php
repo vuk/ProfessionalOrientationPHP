@@ -53,7 +53,7 @@ class HomeController extends BaseController {
 
 	public function getPersonalityQuestions()
 	{
-                if(!isset($_SERVER['HTTP_REFERER'])){
+                if(!Session::get('id')){
                         return Redirect::to(URL::action('HomeController@getIndex'));
                 }
 		$ch = curl_init(); 
@@ -401,6 +401,10 @@ class HomeController extends BaseController {
         }
 
         public function getPickCollege(){
+
+                if(!Session::get('id')){
+                        return Redirect::to(Request::root());
+                }
                 $ch = curl_init(); 
 
                 // set url 
@@ -411,18 +415,95 @@ class HomeController extends BaseController {
 
                 // $output contains the output string 
                 $output = curl_exec($ch); 
-                       
-                $json = json_decode($output);
 
+                // set url 
+                curl_setopt($ch, CURLOPT_URL, "http://shielded-mesa-6901.herokuapp.com/api/recommendation?id=".Session::get('id')); 
+
+                //return the transfer as a string 
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+                // $output contains the output string 
+                $output2 = curl_exec($ch); 
+                       
+                $expertRecommendations = json_decode($output);
+                $collaborativeRecommendations = json_decode($output2);
+
+                foreach($collaborativeRecommendations as $key => $college){
+                        $collaborativeRecommendations[$key]->college = College::find($college->id);
+                }
                 // close curl resource to free up system resources 
                 curl_close($ch);  
-                View::share('colleges', $json);
+                View::share('colleges', $expertRecommendations);
+                View::share('colleges2', $collaborativeRecommendations);
                 View::share('heading', 'Ocenite preporuke');
                 View::share('title', 'Ocenite preporuke');
                 $this->layout           = View::make('master');
                 $this->layout->head     = View::make('head');
                 $this->layout->left     = View::make('left');
                 $this->layout->main     = View::make('pickCollege');
+        }
+
+        public function getThankYou(){
+                $user = User::where('id', '=', Session::get('id'))->first();
+                $user = $user->toArray();
+
+                Mail::send('emails.results', $user, function($message) use($user)
+                {
+                    $message->from('me@vukstankovic.com', 'Profesionalna orijentacija');
+
+                    $message->to($user['email'])->bcc('vuks89@gmail.com')->subject('Testiranje');;
+                });
+                Session::flush();
+                $msg = "Hvala što ste učestvovali u testiranju. <br/>
+                Ukoliko smatrate da rezultati testiranja ne odgovaraju realnom stanju, molimo Vas da nas kontaktirate kako bismo probali da usavršimo sistem.<br/>
+                Rezultati testiranja su vam poslati na Vašu mejl adresu.<br/>
+                <a href='http://puskice.org'>Vratite se na Puškice</a>";
+                View::share('msg', $msg);
+                View::share('title', 'Testiranje završeno');
+                View::share('heading', 'Testiranje završeno - hvala na učešću');
+                $this->layout           = View::make('master');
+                $this->layout->head     = View::make('head');
+                $this->layout->left     = View::make('left');
+                $this->layout->main     = View::make('endmsg');
+        }
+
+        public function getComeBack($hash){
+                try {
+                        $user = User::where('hash', '=', $hash)->firstOrFail();
+                        Session::set('id', $user->id);
+                        if($user->poljoprivreda != "" || $user->poljoprivreda != NULL){
+                                return Redirect::to(Request::root()."/pick-college");
+                        }
+                        else{
+                                return Redirect::to(Request::root()."/personality-questions?id=".$user->id);
+                        }
+                        
+                } catch (Exception $e) {
+                        //var_dump($e->getMessage());
+                        return Redirect::to(Request::root());
+                }
+
+        }
+
+        public function getSendComeBack(){
+                $users = User::where('poljoprivreda', '=', NULL)->get();
+                /*foreach ($users as $key => $user) {
+                        if($key >= 120 && $key < 160){
+                                try{
+                                        Mail::later(60, 'emails.comeback', $user->toArray(), function($message) use($user)
+                                        {
+                                            $message->from('me@vukstankovic.com', 'Vuk Stanković');
+                                            $message->to($user->email, $user->first_name." ".$user->last_name)->subject('Test profesionalne orijentacije');
+                                        });
+                                        var_dump($key, $user->email);        
+                                }
+                                catch(Exception $e){
+                                        var_dump("error");
+                                        continue;
+                                }
+                        }
+                }*/
+
         }
 
 }

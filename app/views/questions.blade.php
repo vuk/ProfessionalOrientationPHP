@@ -18,12 +18,11 @@
                                     <span style="float:left"><strong>1</strong> <small>(ne slažem se)</small></span><span style="float:right"><strong>10</strong> <small>(slažem se)</small></span>
                                     <hr/>
                                 @endforeach
+                                <input type="submit" name="submit" value="Idi na sledeću stranu" class="btn btn-primary pull-right">
                             </div>
                             <div class="col-sm-6">
-                                <input type="submit" name="submit" value="Pošalji" class="btn btn-primary pull-right btn-sticky">
                             </div> 
                         </div>
-                        <input type="submit" name="submit" value="Pošalji" class="btn btn-primary">
                     </div><!-- /.box-body -->
                 </form>
             </div><!-- /.box -->
